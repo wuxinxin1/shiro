@@ -1,0 +1,4 @@
+关于shiro这个框架的一些测试和spring的集成，shiro的一些基本使用.
+
+1.使用的是servlet3.0规范，通过在classpath路径下新建META-INF.service/javax.servlet.ServletContainerInitializer,
+来集成spring和springmvc
