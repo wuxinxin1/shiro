@@ -19,8 +19,16 @@ public class Myinit implements ServletContainerInitializer{
         //下面是整合shiro和spring
 
         //添加shiroFilter
+        /**
+         * 为什么这个filter的id要和ioc容器里面的bean的id一样?
+         * 1.因为DelegatingFilterProxy是一个filter,在执行生命周期方法时，init(FilterConfig filterConfig)中，可以获取到filter的配置对象filterConfig
+         * ，在initFilterBean()方法中，会对DelegatingFilterProxy是否设置targetBeanName进行判断，如果有则采用，如果没有使用filter的名称
+         *
+         * 2.其实DelegatingFilterProxy是一个代理对象，正真的对象是ioc容器中的对象
+         */
         FilterRegistration.Dynamic shiroFilter = servletContext.addFilter("shiroFilter", DelegatingFilterProxy.class);
         shiroFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST),true,"/*");
-
+        //shiroFilter.setInitParameter("targetBeanName","aaa");
     }
 }
+
