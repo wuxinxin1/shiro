@@ -71,12 +71,12 @@ public class RootConfig {
                 /**
                  * 1.配置登录页面，登录成功页面，未成功页面
                  * 2.配置哪些页面需要受保护，以及哪些页面需要权限
-                 * 3.anon表示可以匿名访问，authc表示需要登录成功后才可以访问
+                 * 3.anon表示可以匿名访问，authc表示需要登录成功后才可以访问,logout表示登出拦截器
                  */
                 shiroFilterFactoryBean.setSecurityManager(securityManager());
                 shiroFilterFactoryBean.setLoginUrl("/views/login.jsp");
                 shiroFilterFactoryBean.setSuccessUrl("/views/success.jsp");
-                shiroFilterFactoryBean.setUnauthorizedUrl("views/unau.jsp");
+                shiroFilterFactoryBean.setUnauthorizedUrl("/views/unau.jsp");
                 /**
                  * url与拦截器的配置方式 url=拦截器[参数]
                  * 1.url支持Ant匹配，支持的通配符有？，*，**，采用第一次匹配优先，从上往下匹配
@@ -86,6 +86,8 @@ public class RootConfig {
                  */
                 shiroFilterFactoryBean.setFilterChainDefinitions("" +
                         "" +"/views/login.jsp=anon\n"+
+                        "" +"/test/login=anon\n"+
+                        "" +"/test/logout=logout\n"+
                         "" +"/**=authc\n"+
                         "");
 

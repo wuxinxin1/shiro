@@ -12,5 +12,13 @@
 </head>
 <body>
 <h1>login</h1>
+<form action="/shiro/test/login" method="post">
+    username:<input type="text" name="username"/>
+    <br><br>
+    password:<input type="text" name="password"/>
+    <br><br>
+    <input type="submit" value="登录"/>
+    <br><br>
+</form>
 </body>
 </html>

@@ -12,5 +12,6 @@
 </head>
 <body>
 <h1>success</h1>
+<a href="/shiro/test/logout">logout</a>
 </body>
 </html>
