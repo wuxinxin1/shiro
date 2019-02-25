@@ -77,6 +77,13 @@ public class RootConfig {
                 shiroFilterFactoryBean.setLoginUrl("/views/login.jsp");
                 shiroFilterFactoryBean.setSuccessUrl("/views/success.jsp");
                 shiroFilterFactoryBean.setUnauthorizedUrl("views/unau.jsp");
+                /**
+                 * url与拦截器的配置方式 url=拦截器[参数]
+                 * 1.url支持Ant匹配，支持的通配符有？，*，**，采用第一次匹配优先，从上往下匹配
+                 *   a.?代表单个字符
+                 *   b.*代表多个字符，代表一个路径
+                 *   c.** 代表0-多个路径
+                 */
                 shiroFilterFactoryBean.setFilterChainDefinitions("" +
                         "" +"/views/login.jsp=anon\n"+
                         "" +"/**=authc\n"+
