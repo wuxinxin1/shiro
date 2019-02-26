@@ -1,4 +1,15 @@
 关于shiro这个框架的一些测试和spring的集成，shiro的一些基本使用.
 
+shiro认证流程:
+1.调用Subject的登陆接口，使用的是(子类)DelegatingSubject.login(AuthenticationToken)
+2.使用securityManage的login(Subject var1, AuthenticationToken var2)进行登陆认证操作，其实使用的是子类DefaultSecurityManager进行验证
+3.AuthenticatingSecurityManager里面的默认校验器进行校验Authenticator(ModularRealmAuthenticator),调用校验器的 authenticate(AuthenticationToken var1)进行校验。
+4.调用ModularRealmAuthenticator(子类进行具体实现的方法，父类都是模板方法)，ModularRealmAuthenticator.doAuthenticate(AuthenticationToken authenticationToken)
+5.认证器ModularRealmAuthenticator，去调用AuthenticatingRealm的getAuthenticationInfo(AuthenticationToken var1)接口进行验证
+6.调用MyRealm的doGetAuthenticationInfo(AuthenticationToken authenticationToken)获取到数据库中的信息
+7.调用AuthenticatingRealm的assertCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) 方法进行token和info的比对
+8.调用CredentialsMatcher的doCredentialsMatch(AuthenticationToken var1, AuthenticationInfo var2)进行具体校验
+
+
 1.使用的是servlet3.0规范，通过在classpath路径下新建META-INF.service/javax.servlet.ServletContainerInitializer,
 来集成spring和springmvc

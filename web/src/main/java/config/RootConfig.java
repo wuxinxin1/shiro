@@ -24,6 +24,7 @@ import shiro.MyRealm;
 public class RootConfig {
 
         //配置shiro的安全管理器
+
         @Bean
         public SecurityManager securityManager(){
                 DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
@@ -38,18 +39,21 @@ public class RootConfig {
         //public EhC
 
         //配置realm，角色管理
+
         @Bean
         public Realm realm(){
                 return new MyRealm();
         }
 
         //配置生命周期后置处理bean
+
         @Bean
         public LifecycleBeanPostProcessor lifecycleBeanPostProcessor(){
                 return new LifecycleBeanPostProcessor();
         }
 
         //配置在spring中可以使用shiro注解，但是前提是要配置lifecycleBeanPostProcessor
+
         @Bean
         public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
                 DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator=new DefaultAdvisorAutoProxyCreator();
@@ -64,6 +68,7 @@ public class RootConfig {
         }
 
         //配置shiroFilter，id (bean的名称)必须和web.xml中的filterName一致
+
         @Bean
         public ShiroFilterFactoryBean shiroFilter(){
                 ShiroFilterFactoryBean shiroFilterFactoryBean=new ShiroFilterFactoryBean();
