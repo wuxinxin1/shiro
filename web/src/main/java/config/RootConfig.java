@@ -1,5 +1,7 @@
 package config;
 
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -42,7 +44,13 @@ public class RootConfig {
 
         @Bean
         public Realm realm(){
-                return new MyRealm();
+                MyRealm myRealm = new MyRealm();
+                //提供密码加密器,否则使用默认的SimpleCredentialsMatcher(使用明文进行比对)
+                HashedCredentialsMatcher hashedCredentialsMatcher=new HashedCredentialsMatcher();
+                //设置算法名称
+                hashedCredentialsMatcher.setHashAlgorithmName("MD5");
+                myRealm.setCredentialsMatcher(hashedCredentialsMatcher);
+                return myRealm;
         }
 
         //配置生命周期后置处理bean

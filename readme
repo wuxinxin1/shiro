@@ -9,6 +9,7 @@ shiro认证流程:
 6.调用MyRealm的doGetAuthenticationInfo(AuthenticationToken authenticationToken)获取到数据库中的信息
 7.调用AuthenticatingRealm的assertCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) 方法进行token和info的比对
 8.调用CredentialsMatcher的doCredentialsMatch(AuthenticationToken var1, AuthenticationInfo var2)进行具体校验
+9.CredentialsMatcher主要是去比对密码，用户名在我们自己定义的Realm中已经做过校验了
 
 
 1.使用的是servlet3.0规范，通过在classpath路径下新建META-INF.service/javax.servlet.ServletContainerInitializer,
