@@ -1,7 +1,8 @@
 package config;
 
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
+import org.apache.shiro.authc.pam.AllSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -14,6 +15,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Controller;
 import shiro.MyRealm;
+import shiro.SecondRealm;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -33,12 +38,36 @@ public class RootConfig {
                 //配置缓存管理器
                 //defaultWebSecurityManager.setCacheManager(null);
                 //配置角色realm
-                defaultWebSecurityManager.setRealm(realm());
+                //defaultWebSecurityManager.setRealm(realm());
+                //配置多个角色
+                defaultWebSecurityManager.setAuthenticator(modularRealmAuthenticator());
                 return defaultWebSecurityManager;
         }
 
+
         //配置hibernate的缓存管理器ehcatchmanage
         //public EhC
+
+        @Bean
+        //配置校验器来管理realm以及验证策略
+        public ModularRealmAuthenticator modularRealmAuthenticator(){
+                ModularRealmAuthenticator modularRealmAuthenticator=new ModularRealmAuthenticator();
+                //添加realm
+                List<Realm> realms=new ArrayList<>();
+
+                realms.add(realm());
+                realms.add(realm2());
+                modularRealmAuthenticator.setRealms(realms);
+
+                //添加验证策略,默认是AtLeastOneSuccessfulStrategy
+                modularRealmAuthenticator.setAuthenticationStrategy(allSuccessfulStrategy());
+                return modularRealmAuthenticator;
+        }
+
+        //配置校验策略,所有自定义realm都要满足;通过一个不满足验证条件的就抛出异常，使得程序终止，导致验证失败
+        public AllSuccessfulStrategy allSuccessfulStrategy(){
+                return new AllSuccessfulStrategy();
+        }
 
         //配置realm，角色管理
 
@@ -51,6 +80,19 @@ public class RootConfig {
                 hashedCredentialsMatcher.setHashAlgorithmName("MD5");
                 myRealm.setCredentialsMatcher(hashedCredentialsMatcher);
                 return myRealm;
+        }
+
+        @Bean
+        public Realm realm2(){
+                SecondRealm secondRealm=new SecondRealm();
+                //提供密码加密器,否则使用默认的SimpleCredentialsMatcher(使用明文进行比对)
+                HashedCredentialsMatcher hashedCredentialsMatcher=new HashedCredentialsMatcher();
+                //设置算法名称
+                //hashedCredentialsMatcher.setHashAlgorithmName("MD5");
+                //更换hash算法，达到只有一个realm匹配，来验证allSuccessfulStrategy
+                hashedCredentialsMatcher.setHashAlgorithmName("SHA1");
+                secondRealm.setCredentialsMatcher(hashedCredentialsMatcher);
+                return secondRealm;
         }
 
         //配置生命周期后置处理bean
@@ -69,9 +111,9 @@ public class RootConfig {
         }
 
         @Bean
-        public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(){
+        public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager){
                 AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor=new AuthorizationAttributeSourceAdvisor();
-                authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
+                authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
                 return authorizationAttributeSourceAdvisor;
         }
 

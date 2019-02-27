@@ -1,29 +1,27 @@
 package shiro;
 
 import org.apache.shiro.authc.*;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthenticatingRealm;
-import org.apache.shiro.realm.Realm;
 
 /**
  * Created by Administrator on 2019/2/24/024.
  */
-public class MyRealm extends AuthenticatingRealm{
+public class SecondRealm extends AuthenticatingRealm{
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        System.out.println(".......MyRealm......");
+        System.out.println(".......SecondRealm......");
         //先取出传递过来需要认证的数据
         UsernamePasswordToken usernamePasswordToken=(UsernamePasswordToken)authenticationToken;
         //取出需要验证的username
         String username = usernamePasswordToken.getUsername();
         //取数据库查找username对应的记录，查找数据库中是否存在username相关的记录
-        System.out.println("MyRealm查询"+username+"相关的数据");
+        System.out.println("SecondRealm查询"+username+"相关的数据");
 
         //查到unknow则认为查找失败
         if("unknow".equals(username)){
-            throw new UnknownAccountException("MyRealm用户不存在");
+            throw new UnknownAccountException("SecondRealm用户不存在");
         }
 
         //下面是数据库中查找到的信息
@@ -40,7 +38,7 @@ public class MyRealm extends AuthenticatingRealm{
     //加密器的测试
     public static void main(String[] args) {
         //使用MD5加密算法，在不适用盐的情况下，相同的密码得到加密后的数据是一样的
-        SimpleHash simpleHash = new SimpleHash("MD5","123456","",1);
+        SimpleHash simpleHash = new SimpleHash("SHA1","123456","",1);
 
         System.out.println(simpleHash);
     }
