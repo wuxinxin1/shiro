@@ -18,6 +18,7 @@ import shiro.MyRealm;
 import shiro.SecondRealm;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,6 +42,7 @@ public class RootConfig {
                 //defaultWebSecurityManager.setRealm(realm());
                 //配置多个角色
                 defaultWebSecurityManager.setAuthenticator(modularRealmAuthenticator());
+                defaultWebSecurityManager.setRealms(realms());
                 return defaultWebSecurityManager;
         }
 
@@ -53,14 +55,10 @@ public class RootConfig {
         public ModularRealmAuthenticator modularRealmAuthenticator(){
                 ModularRealmAuthenticator modularRealmAuthenticator=new ModularRealmAuthenticator();
                 //添加realm
-                List<Realm> realms=new ArrayList<>();
-
-                realms.add(realm());
-                realms.add(realm2());
-                modularRealmAuthenticator.setRealms(realms);
+                modularRealmAuthenticator.setRealms(realms());
 
                 //添加验证策略,默认是AtLeastOneSuccessfulStrategy
-                modularRealmAuthenticator.setAuthenticationStrategy(allSuccessfulStrategy());
+                //modularRealmAuthenticator.setAuthenticationStrategy(allSuccessfulStrategy());
                 return modularRealmAuthenticator;
         }
 
@@ -70,6 +68,15 @@ public class RootConfig {
         }
 
         //配置realm，角色管理
+
+        @Bean
+        public Collection<Realm> realms(){
+                List<Realm> realms=new ArrayList<>();
+
+                realms.add(realm());
+                realms.add(realm2());
+                return realms;
+        }
 
         @Bean
         public Realm realm(){
@@ -111,9 +118,9 @@ public class RootConfig {
         }
 
         @Bean
-        public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager){
+        public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(){
                 AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor=new AuthorizationAttributeSourceAdvisor();
-                authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+                authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
                 return authorizationAttributeSourceAdvisor;
         }
 
@@ -126,7 +133,9 @@ public class RootConfig {
                 /**
                  * 1.配置登录页面，登录成功页面，未成功页面
                  * 2.配置哪些页面需要受保护，以及哪些页面需要权限
-                 * 3.anon表示可以匿名访问，authc表示需要登录成功后才可以访问,logout表示登出拦截器
+                 * 3.拦截器
+                 * 1.验证拦截器:anon表示可以匿名访问，authc表示需要登录成功后才可以访问,logout表示登出拦截器
+                 * 2.授权拦截器:roles[par]表示需要有哪个角色
                  */
                 shiroFilterFactoryBean.setSecurityManager(securityManager());
                 shiroFilterFactoryBean.setLoginUrl("/views/login.jsp");
@@ -143,6 +152,7 @@ public class RootConfig {
                         "" +"/views/login.jsp=anon\n"+
                         "" +"/test/login=anon\n"+
                         "" +"/test/logout=logout\n"+
+                        "" +"/views/success.jsp=roles[user]\n"+
                         "" +"/**=authc\n"+
                         "");
 

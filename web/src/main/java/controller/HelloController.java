@@ -40,7 +40,7 @@ public class HelloController {
             }
 
         }
-        return "success";
+        return "redirect:/views/success.jsp";
     }
 
 

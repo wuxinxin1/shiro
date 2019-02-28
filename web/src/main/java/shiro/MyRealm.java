@@ -2,15 +2,30 @@ package shiro;
 
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthenticatingRealm;
+import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.subject.PrincipalCollection;
 
 /**
+ * @see AuthorizingRealm
+ * @see AuthenticatingRealm
+ *
+ * AuthorizingRealm 提供基础的登陆验证功能
+ * AuthenticatingRealm 是继承AuthenticatingRealm，在此基础上增加授权功能
  * Created by Administrator on 2019/2/24/024.
  */
-public class MyRealm extends AuthenticatingRealm{
+//public class MyRealm extends AuthenticatingRealm{
+public class MyRealm extends AuthorizingRealm {
 
+    /**
+     * 用来验证登陆的
+     * @param authenticationToken
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println(".......MyRealm......");
@@ -43,5 +58,16 @@ public class MyRealm extends AuthenticatingRealm{
         SimpleHash simpleHash = new SimpleHash("MD5","123456","",1);
 
         System.out.println(simpleHash);
+    }
+
+    /**
+     * 进行授权方面的验证
+     * @param principals
+     * @return
+     */
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        System.out.println("....doGetAuthorizationInfo....");
+        return null;
     }
 }
