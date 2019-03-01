@@ -3,11 +3,17 @@ package shiro;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @see AuthorizingRealm
@@ -67,7 +73,18 @@ public class MyRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println("....doGetAuthorizationInfo....");
-        return null;
+        //获取用户登录信息
+        Object primaryPrincipal = principals.getPrimaryPrincipal();
+
+        //通过用户名称，来查询数据库中，用户的权限(角色)
+        Set<String> roles=new HashSet<>();
+        roles.add("user");
+        if(primaryPrincipal.equals("admin")){
+            roles.add("admin");
+        }
+
+        SimpleAuthorizationInfo simpleAuthorizationInfo=new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.setRoles(roles);
+        return simpleAuthorizationInfo;
     }
 }

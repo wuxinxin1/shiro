@@ -11,9 +11,7 @@
     <title>Title</title>
 </head>
 <body>
-<h1>success</h1>
-<a href="admin.jsp">admin</a>
-<a href="user.jsp">user</a>
+<h1>user page</h1>
 <a href="/shiro/test/logout">logout</a>
 </body>
 </html>

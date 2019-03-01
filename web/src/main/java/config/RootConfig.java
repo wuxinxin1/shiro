@@ -152,7 +152,9 @@ public class RootConfig {
                         "" +"/views/login.jsp=anon\n"+
                         "" +"/test/login=anon\n"+
                         "" +"/test/logout=logout\n"+
-                        "" +"/views/success.jsp=roles[user]\n"+
+                        "" +"/views/admin.jsp=roles[admin]\n"+
+                        "" +"/views/user.jsp=roles[user]\n"+
+                        /*"" +"/views/success.jsp=roles[user]\n"+*/
                         "" +"/**=authc\n"+
                         "");
 
