@@ -1,5 +1,7 @@
 package config;
 
+import factory.ColorFactory;
+import factory.FilterChainDefinitionMapFactory;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.pam.AllSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
@@ -16,10 +18,10 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Controller;
 import shiro.MyRealm;
 import shiro.SecondRealm;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -32,7 +34,6 @@ import java.util.List;
 public class RootConfig {
 
         //配置shiro的安全管理器
-
         @Bean
         public SecurityManager securityManager(){
                 DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
@@ -142,22 +143,53 @@ public class RootConfig {
                 shiroFilterFactoryBean.setSuccessUrl("/views/success.jsp");
                 shiroFilterFactoryBean.setUnauthorizedUrl("/views/unau.jsp");
                 /**
+                 * 配置权限以及拦截器的两种方式
+                 * 1.setFilterChainDefinitions方式，配置字符串解析为最终所需要的Map,间接调用setFilterChainDefinitionMap方式
+                 * 2.setFilterChainDefinitionMap方式，直接注入一个Map
                  * url与拦截器的配置方式 url=拦截器[参数]
                  * 1.url支持Ant匹配，支持的通配符有？，*，**，采用第一次匹配优先，从上往下匹配
                  *   a.?代表单个字符
                  *   b.*代表多个字符，代表一个路径
                  *   c.** 代表0-多个路径
                  */
-                shiroFilterFactoryBean.setFilterChainDefinitions("" +
+
+                //方式一
+                /*shiroFilterFactoryBean.setFilterChainDefinitions("" +
                         "" +"/views/login.jsp=anon\n"+
                         "" +"/test/login=anon\n"+
                         "" +"/test/logout=logout\n"+
                         "" +"/views/admin.jsp=roles[admin]\n"+
                         "" +"/views/user.jsp=roles[user]\n"+
-                        /*"" +"/views/success.jsp=roles[user]\n"+*/
                         "" +"/**=authc\n"+
-                        "");
+                        "");*/
 
+                //方式二
+                shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap());
                 return shiroFilterFactoryBean;
+        }
+
+        /**
+         * 从Map工厂创建一个Map对象
+         * @return
+         */
+        @Bean
+        public Map<String,String > filterChainDefinitionMap(){
+                FilterChainDefinitionMapFactory filterChainDefinitionMapFactory = filterChainDefinitionMapFactory();
+                return filterChainDefinitionMapFactory.getInstance();
+        }
+
+        /**
+         * 创建Map工厂
+         * @return
+         */
+        @Bean
+        public FilterChainDefinitionMapFactory filterChainDefinitionMapFactory(){
+                return new FilterChainDefinitionMapFactory();
+        }
+
+        @Bean
+        public ColorFactory colorFactory(){
+                ColorFactory colorFactory = new ColorFactory();
+                return colorFactory;
         }
 }

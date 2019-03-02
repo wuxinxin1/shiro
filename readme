@@ -14,3 +14,32 @@ shiro认证流程:
 
 1.使用的是servlet3.0规范，通过在classpath路径下新建META-INF.service/javax.servlet.ServletContainerInitializer,
 来集成spring和springmvc
+
+
+shiro架构：
+subject：认证的主体，相当于一个门面，接收各种认证主体
+securityManage:安全管理器，也就是subject(各种认证主题)是把认证信息交给securityManage,由securityManage正真去执行认证的逻辑
+                会进行认证，授权，会话，缓存的管理
+                a.Authenticator,这是一个认证器，用于对用户信息的认证，通过接口的唯一方法authenticate(AuthenticationToken var1)
+                  1.AuthenticationToken是用户填写的认证信息
+                  2.聚合组件realms，这是一个集合，有多个Realm,来获取数据库中的用户实体信息(认证信息)
+                  3.聚合组件AuthenticationStrategy，这个指定了认证策列，通过检查多个Realm，来确认在几个Realm认证成功情况下，认为认证成功
+
+                b.Authrizer：授权器，或者访问控制器，用来决定主体是否有权限进行相应的操作；即控制着用户能访问应用中的哪些功能；
+                  1.securityManage使用默认的ModularRealmAuthorizer
+                  2.聚合组件realms，这是一个集合，有多个Realm,来获取数据库中的用户实体信息(授权信息)
+                  3.聚合组件PermissionResolver
+                  4.聚合组件RolePermissionResolver
+
+                 c.SessionManage:会话管理器，通过会话管理利器，可以管理session的生命周期（包括websession,ejbsession）
+                   1.securityManage使用默认的会话管理器DefaultSessionManager
+                   2.聚合组件SessionFactory，会话工厂
+                   3.聚合组件SessionDAO，用于做session的curd操作
+                   4.聚合组件CacheManager，用于做session的缓存管理，来提高效率
+
+
+Realm：这个是一个安全数据源，及管理着所有的认证数据;比如：认证数据，和授权数据，securityManage在校验认证和授权，都需要去Realm中获取数据
+
+
+shiro的过滤链:
+AbstractShiroFilter->OncePerRequestFilter->NameableFilter->AbstractFilter->Filter
