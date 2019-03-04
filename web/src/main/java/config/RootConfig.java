@@ -7,10 +7,14 @@ import org.apache.shiro.authc.pam.AllSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionContext;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,9 +48,22 @@ public class RootConfig {
                 //配置多个角色
                 defaultWebSecurityManager.setAuthenticator(modularRealmAuthenticator());
                 defaultWebSecurityManager.setRealms(realms());
+                //设置会话管理器
+                //defaultWebSecurityManager.setSessionManager(sessionManager());
+                defaultWebSecurityManager.setSessionManager(defaultWebSessionManager());
                 return defaultWebSecurityManager;
         }
 
+        //配置sessionManage(session管理器)
+        public SessionManager defaultSessionManager(){
+                DefaultSessionManager defaultSessionManager = new DefaultSessionManager();
+                return defaultSessionManager;
+        }
+
+        public SessionManager defaultWebSessionManager(){
+                DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
+                return defaultWebSessionManager;
+        }
 
         //配置hibernate的缓存管理器ehcatchmanage
         //public EhC

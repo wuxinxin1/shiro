@@ -1,1 +1,25 @@
 #说明sessionManage
+  1.Session start(SessionContext var1); 创建会话
+
+  2.Session getSession(SessionKey var1) throws SessionException; 通过key获取会话
+    a.调用AbstractNativeSessionManager中的getSession(SessionKey key)
+    b.调用AbstractValidatingSessionManager的doGetSession(SessionKey key)正真去获取session(会话)
+    c.调用DefaultSessionManager的retrieveSessionFromDataSource(Serializable sessionId)，根据id查找session
+    d.调用AbstractSessionDAO的readSession(Serializable sessionId)来到sessionDao查找session
+    e.调用AbstractValidatingSessionManager的validate(Session session, SessionKey key)来校验session
+    f.调用ValidatingSession的validate()来校验session,校验session有没有过期
+
+
+
+
+
+访问的整个流程:
+        1.因为我们在web.xml里面配置了一个DelegatingFilterProxy的过滤器，并且拦截任何路径（/*）
+        2.当一个请求发送过来的时候，会调用DelegatingFilterProxy的doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)方法
+        3.实际上DelegatingFilterProxy去调用代理SpringShiroFilter对象的doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)方法
+          SpringShiroFilter这个对象是通过ShiroFilterFactoryBean去创建的，实际上是SpringShiroFilter是AbstractShiroFilter类型的，也就是说调用了OncePerRequestFilter的
+          doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)方法
+        4.调用AbstractShiroFilter的doFilterInternal(ServletRequest servletRequest, ServletResponse servletResponse, final FilterChain chain)进行实际操作
+
+        5.调用AbstractShiroFilter的createSubject(ServletRequest request, ServletResponse response)来构建Subject
+           a.使用WebSubject的内部类的构建器来构建Subject
