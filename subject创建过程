@@ -35,6 +35,8 @@
      f.在SubjectContext中添加session信息
 
 
+
+
  4.利用由session,request,responce,securityManage构成的SubjectContext进行真正创建Subject
       a.使用SubjectFactory，也就是Subject工厂去创建Subject
       b.使用上下本相关信息创建Subject
