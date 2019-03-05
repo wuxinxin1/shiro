@@ -1,0 +1,43 @@
+创建subject：
+
+1.使用WebSubject$Builder构建器进行构建，所以显示创建WebSubject$Builder类型的构造器(创建WebSubject$Builder类型的构建器)(webSubject的内部类)
+  a.调用WebSubject$Builder的三个三参数的构造方法Builder(SecurityManager securityManager, ServletRequest request, ServletResponse response)
+     将代理过滤器，即AbstractShiroFilter的securityManager，request,responces作为参数进行创建WebSubject$Builder
+
+  b.调用父类的构建器进行构造，在其中，会创建SubjectContext(DefaultSubjectContext)对象，也就是Subject上下文,在subjectContext中设置securityManage
+
+  c.subjectContext设置request
+
+  d.subjectContext设置responce
+
+  总结:(WebSubject$Builder的构造函数中，其实是为了SubjectContext(Subject上下文),WebSubject$Builder就有两个属性SubjectContext，
+        SecurityManager。SubjectContext这个SubjectContext中包含SecurityManager，创建的SubjectContext的类型是DefaultWebSubjectContext类型的上下文)
+
+
+
+ 2.使用构建器去创建Subject对象，调用WebSubject$Builder的buildWebSubject进行创建（Subject的内部类）
+   a.调用Subject的buildSubject进行构建，在内部Subject的内部类构建器还是委托给SecurityManage进行创建Subject
+
+   b.因为在创建Subject构建器的时候，有两个属性SubjectContext和SecurityManage,那么构建器就使用SecurityManage通过SubjectContext去构建Subject
+
+
+ 3.使用SecurityManage的createSubject(SubjectContext subjectContext)进行创建Subject
+   a.复制一份SubjectContext
+
+   b.检查SubjectContext中是否有SecurityManage,如果直接返回，如果没有，设置为当前的SecurityManage
+
+   c.解决session问题(为SubjectContext添加Session)
+     a.检查SubjectContext有没有session,检查到上下文中还没有Session
+     b.从SubjectContext去获取SessionKey,创建sessionKey,在SecurityManage中的SessionManage根据getSession(SessionKey key)查找Session
+     c.查找session是根据sessionId来查找的，首先直接getSessionId(key)获取，因为是刚刚构建的肯定获取不到，接着到cookie里面去获取cookie的参数，从而拿到sessionId
+     d.然后根据sessionId去SessionDao中获取session,通过SessionDao的readSession(Serializable sessionId)方法
+     e.接着去验证这个session是否过期
+     f.在SubjectContext中添加session信息
+
+
+ 4.利用由session,request,responce,securityManage构成的SubjectContext进行真正创建Subject
+      a.使用SubjectFactory，也就是Subject工厂去创建Subject
+      b.使用上下本相关信息创建Subject
+
+
+  5.上面创建的Subject使用SubjectDao进行保存
