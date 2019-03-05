@@ -34,14 +34,15 @@
      e.接着去验证这个session是否过期
      f.在SubjectContext中添加session信息
 
+     (细节:浏览器第一次访问服务器的时候,由于不存在sessionId,自然就不存在session,但是会创建一个sessionId返回到路径(通过把sessionId写到cookie中);
+      第二次访问的时候，就可以通过sessionId找到对应的session了，然后添加到SubjectContext中)
 
- 4.利用由session,request,responce,securityManage构成的SubjectContext进行真正创建Subject
+ 4.解决Principals
+
+ 5.利用由session,request,responce,securityManage构成的SubjectContext进行真正创建Subject
       a.使用SubjectFactory，也就是Subject工厂去创建Subject
       b.使用上下本相关信息创建Subject
 
-
- 5.解决Principals
-
  6.创建Subject,使用所有所需参数（principals, authenticated, host, session, sessionEnabled, request, response, securityManager），很明显Subject有所有相关信息
 
- 6.上面创建的Subject使用SubjectDao进行保存
+ 7.上面创建的Subject使用SubjectDao进行保存
