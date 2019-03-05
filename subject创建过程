@@ -35,11 +35,13 @@
      f.在SubjectContext中添加session信息
 
 
-
-
  4.利用由session,request,responce,securityManage构成的SubjectContext进行真正创建Subject
       a.使用SubjectFactory，也就是Subject工厂去创建Subject
       b.使用上下本相关信息创建Subject
 
 
-  5.上面创建的Subject使用SubjectDao进行保存
+ 5.解决Principals
+
+ 6.创建Subject,使用所有所需参数（principals, authenticated, host, session, sessionEnabled, request, response, securityManager），很明显Subject有所有相关信息
+
+ 6.上面创建的Subject使用SubjectDao进行保存
