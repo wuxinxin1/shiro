@@ -1,0 +1,15 @@
+shiro中过滤器的规则：
+
+1.过滤器的类型
+  a.OncePerRequestFilter,这个过滤器是用来控制过滤器执行次数的，通过设置request域，在request域中设置过滤器名称来作为标志
+    这个过滤器还可以用来控制是否跳过这个控制器执行，这个过滤器有一个enabled属性，默认是true,当为false的时候，将跳过这个过滤器
+
+
+
+
+
+
+
+2.过滤器辅助器
+   a.PathMatchingFilterChainResolver,这是个路径解析器，用来匹配对应的路径的，返回匹配到的路径
+   b.FilterChainManager,这个负责查找匹配到的Ant风格的路径对应到的过滤器
