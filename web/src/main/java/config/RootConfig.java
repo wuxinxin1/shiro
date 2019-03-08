@@ -145,7 +145,7 @@ public class RootConfig {
         //配置shiroFilter，id (bean的名称)必须和web.xml中的filterName一致
 
         @Bean
-        public ShiroFilterFactoryBean shiroFilter(){
+        public ShiroFilterFactoryBean shiroFilter() throws Exception {
                 ShiroFilterFactoryBean shiroFilterFactoryBean=new ShiroFilterFactoryBean();
 
                 /**
@@ -181,7 +181,8 @@ public class RootConfig {
                         "");*/
 
                 //方式二
-                shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap());
+                //shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap());
+                shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMapFactory().getObject());
                 return shiroFilterFactoryBean;
         }
 
@@ -189,11 +190,11 @@ public class RootConfig {
          * 从Map工厂创建一个Map对象
          * @return
          */
-        @Bean
+       /* @Bean
         public Map<String,String > filterChainDefinitionMap(){
                 FilterChainDefinitionMapFactory filterChainDefinitionMapFactory = filterChainDefinitionMapFactory();
                 return filterChainDefinitionMapFactory.getInstance();
-        }
+        }*/
 
         /**
          * 创建Map工厂

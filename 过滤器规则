@@ -13,3 +13,26 @@ shiro中过滤器的规则：
 2.过滤器辅助器
    a.PathMatchingFilterChainResolver,这是个路径解析器，用来匹配对应的路径的，返回匹配到的路径
    b.FilterChainManager,这个负责查找匹配到的Ant风格的路径对应到的过滤器
+
+
+
+和过滤器相关的重要接口:
+    1.FilterChainResolver:  过滤器链解析器
+      接口方法：
+      FilterChain getChain(ServletRequest var1, ServletResponse var2, FilterChain var3);  根据过滤器链解析器获取过滤器链(通过查看
+                       FilterChainManager里面的我们配置的路径，看是否当前请求路径和 FilterChainManager里面的路径有相匹配的，找到匹配的路径)
+      实现类:
+      PathMatchingFilterChainResolver:根据路径匹配的过滤器链解析器
+      f(属性):
+      FilterChainManager:过滤器链管理器，用来保存我们自己配置的过滤器
+      PatternMatcher:模式匹配器，用于匹配路径（Ant风格的）
+
+
+    2.FilterChainManager:过滤器链管理器
+      接口方法：
+      FilterChain proxy(FilterChain var1, String var2);过滤器链代理方法，通过拿到匹配的路径，使用路径查找对应的过滤器
+
+
+    3.FilterChain:过滤器链
+      接口方法:
+      void doFilter(ServletRequest var1, ServletResponse var2) throws IOException, ServletException;执行这个过滤器链
