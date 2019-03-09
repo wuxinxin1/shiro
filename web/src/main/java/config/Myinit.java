@@ -17,7 +17,6 @@ public class Myinit implements ServletContainerInitializer{
     public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
         System.out.println("test");
         //下面是整合shiro和spring
-
         //添加shiroFilter
         /**
          * 为什么这个filter的id要和ioc容器里面的bean的id一样?
