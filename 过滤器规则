@@ -36,3 +36,18 @@ shiro中过滤器的规则：
     3.FilterChain:过滤器链
       接口方法:
       void doFilter(ServletRequest var1, ServletResponse var2) throws IOException, ServletException;执行这个过滤器链
+
+
+
+过滤器执行规则:
+
+   1.通过AbstractShiroFilter的getExecutionChain获得执行链
+   2.在FilterChainResolver的接口方法FilterChain getChain(ServletRequest var1, ServletResponse var2, FilterChain var3);是对getExecutionChain的细化
+   ##对getChain的细化
+   3.在FilterChainResolver中获取到FilterChainManager，在FilterChainManager中配置了默认的拦截器和配置了相关路径需要执行的拦截器
+   4.通过FilterChainManager的hasChains方法判断我们自己有没有配置执行链
+   5.将我们配置的链中路径和当前请求路径进行比对，因为我们配置的拦截器转换为了Map<String,Filter>
+   6.在匹配中找到了当前路径是配置了拦截器的，那么调用FilterChainManager的FilterChain proxy(FilterChain var1, String var2);
+   7.通过FilterChainManager的getChain(String chainName)方法，在Map<String,Filter>找到了过滤器
+   8.创建ProxiedFilterChain类型的FilterChain实例
+   9.执行ProxiedFilterChain的doFilter，开始执行过滤器链
