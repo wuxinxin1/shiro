@@ -16,6 +16,7 @@ public class FilterChainDefinitionMapFactory implements FactoryBean<Map<String,S
 
     public Map<String,String >  getInstance(){
         Map<String,String >  map=new LinkedHashMap<>();
+        map.put("/ajax/*","anon");
         map.put("/views/login.jsp","anon");
         map.put("/test/login","anon");
         map.put("/test/logout","logout");
