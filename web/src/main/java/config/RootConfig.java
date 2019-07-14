@@ -7,8 +7,10 @@ import org.apache.shiro.authc.pam.AllSuccessfulStrategy;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -20,6 +22,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Controller;
+import redis.RedisSessionDao;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import shiro.MyRealm;
 import shiro.SecondRealm;
 import java.util.ArrayList;
@@ -36,7 +41,6 @@ import java.util.Map;
         @ComponentScan.Filter(type = FilterType.ANNOTATION,classes = Controller.class)}
         )
 public class RootConfig {
-
         //配置shiro的安全管理器
         @Bean
         public SecurityManager securityManager(){
@@ -60,8 +64,10 @@ public class RootConfig {
                 return defaultSessionManager;
         }
 
+        @Bean
         public SessionManager defaultWebSessionManager(){
                 DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
+                defaultWebSessionManager.setSessionDAO(sessionDAO());
                 return defaultWebSessionManager;
         }
 
@@ -209,5 +215,25 @@ public class RootConfig {
         public ColorFactory colorFactory(){
                 ColorFactory colorFactory = new ColorFactory();
                 return colorFactory;
+        }
+
+        @Bean
+        public JedisPoolConfig jedisPoolConfig(){
+                JedisPoolConfig jedisPoolConfig=new JedisPoolConfig();
+                jedisPoolConfig.setMaxTotal(20);
+                jedisPoolConfig.setTestOnBorrow(true);
+                return jedisPoolConfig;
+        }
+
+        @Bean(destroyMethod = "close")
+        public JedisPool jedisPool(){
+                return new JedisPool(jedisPoolConfig(),"127.0.0.1",6379);
+        }
+
+        @Bean
+        public SessionDAO sessionDAO(){
+                RedisSessionDao sessionDAO=new RedisSessionDao();
+                sessionDAO.setJedisPool(jedisPool());
+                return sessionDAO;
         }
 }
