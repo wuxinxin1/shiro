@@ -54,7 +54,7 @@ public class RootConfig {
                 defaultWebSecurityManager.setRealms(realms());
                 //设置会话管理器
                 //defaultWebSecurityManager.setSessionManager(sessionManager());
-                defaultWebSecurityManager.setSessionManager(defaultWebSessionManager());
+                //defaultWebSecurityManager.setSessionManager(defaultWebSessionManager());
                 return defaultWebSecurityManager;
         }
 
@@ -152,6 +152,12 @@ public class RootConfig {
 
         @Bean
         public ShiroFilterFactoryBean shiroFilter() throws Exception {
+                /**
+                 * shiroFilterFactoryBean是一个工厂bean，其实返回的bean是getObject（）方法的一个实例
+                 *
+                 * DelegatingFilterProxy在初始化的时候，会去ico容器中获取到shiroFilterFactoryBean，因为shiroFilterFactoryBean
+                 * 是一个bean工厂，会调用shiroFilterFactoryBean的getObject方法，获取到最终的
+                 */
                 ShiroFilterFactoryBean shiroFilterFactoryBean=new ShiroFilterFactoryBean();
 
                 /**
